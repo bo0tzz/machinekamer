@@ -24,7 +24,8 @@ defmodule Machinekamer.MixProject do
     [
       {:emqtt, github: "emqx/emqtt", tag: "1.10.1", system_env: [{"BUILD_WITHOUT_QUIC", "1"}]},
       {:jason, "~> 1.4"},
-      {:phoenix_pubsub, "~> 2.1"}
+      {:phoenix_pubsub, "~> 2.1"},
+      {:tz, "~> 0.26.5"}
     ]
   end
 end
