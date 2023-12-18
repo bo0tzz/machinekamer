@@ -13,14 +13,30 @@ defmodule Machinekamer.HallwayLight do
   end
 
   def handle_info(payload, state) do
-    target_state =
-      case payload do
-        %{"occupancy" => true} -> %{"state" => "ON"}
-        %{"occupancy" => false} -> %{"state" => "OFF"}
-      end
-
-    Machinekamer.publish("zigbee2mqtt/light_hallway/set", target_state)
+    case payload do
+      %{"occupancy" => true} -> toggle(:on)
+      %{"occupancy" => false} -> toggle(:off)
+    end
 
     {:noreply, state}
+  end
+
+  def toggle(:off) do
+    Machinekamer.publish(
+      "zigbee2mqtt/light_hallway/set",
+      %{"state" => "OFF"}
+    )
+  end
+
+  def toggle(:on) do
+    now = DateTime.now!("Europe/Amsterdam")
+
+    case now.hour do
+      hour when hour < 8 or hour >= 17 ->
+        Machinekamer.publish("zigbee2mqtt/light_hallway/set", %{"state" => "ON"})
+
+      _ ->
+        :ignored
+    end
   end
 end
