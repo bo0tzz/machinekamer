@@ -8,8 +8,9 @@ defmodule Machinekamer.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: Machinekamer.Worker.start_link(arg)
-      # {Machinekamer.Worker, arg}
+      {Phoenix.PubSub, name: :mqtt},
+      Machinekamer.MqttConnection,
+      Machinekamer.HallwayLight
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
