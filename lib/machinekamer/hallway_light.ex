@@ -22,21 +22,12 @@ defmodule Machinekamer.HallwayLight do
   end
 
   def toggle(:off) do
-    Machinekamer.publish(
-      "zigbee2mqtt/light_hallway/set",
-      %{"state" => "OFF"}
-    )
+    Machinekamer.publish("zigbee2mqtt/light_hallway/set", %{"state" => "OFF"})
   end
 
   def toggle(:on) do
-    now = DateTime.now!("Europe/Amsterdam")
-
-    case now.hour do
-      hour when hour < 8 or hour >= 17 ->
-        Machinekamer.publish("zigbee2mqtt/light_hallway/set", %{"state" => "ON"})
-
-      _ ->
-        :ignored
+    if Machinekamer.Clock.is_dark?() do
+      Machinekamer.publish("zigbee2mqtt/light_hallway/set", %{"state" => "ON"})
     end
   end
 end
