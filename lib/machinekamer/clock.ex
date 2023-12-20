@@ -3,6 +3,8 @@ defmodule Machinekamer.Clock do
   @lat 52.11
   @long 4.32
 
+  @bedtime [hour: 23, minute: 0]
+
   def sunrise() do
     {:ok, rise} =
       Timex.today(@timezone)
@@ -25,4 +27,16 @@ defmodule Machinekamer.Clock do
   end
 
   def is_dark?(), do: not is_light?()
+
+  def time_until_bedtime() do
+    now = Timex.now(@timezone)
+    bedtime = Timex.set(now, @bedtime)
+
+    if Timex.after?(now, bedtime) do
+      Timex.Duration.zero()
+    else
+      Timex.Interval.new(from: now, until: bedtime)
+      |> Timex.Interval.duration(:duration)
+    end
+  end
 end

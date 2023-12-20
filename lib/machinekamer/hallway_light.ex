@@ -27,7 +27,19 @@ defmodule Machinekamer.HallwayLight do
 
   def toggle(:on) do
     if Machinekamer.Clock.is_dark?() do
-      Machinekamer.publish("zigbee2mqtt/light_hallway/set", %{"state" => "ON"})
+      Machinekamer.publish("zigbee2mqtt/light_hallway/set", %{
+        "state" => "ON",
+        "brightness" => brightness()
+      })
+    end
+  end
+
+  defp brightness() do
+    minutes = Machinekamer.Clock.time_until_bedtime() |> Timex.Duration.to_minutes()
+
+    case min(minutes, 254) do
+      0 -> 1
+      m -> m
     end
   end
 end
