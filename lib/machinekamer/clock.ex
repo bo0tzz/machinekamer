@@ -3,14 +3,21 @@ defmodule Machinekamer.Clock do
   @lat 52.11
   @long 4.32
 
-  @bedtime [hour: 23, minute: 0]
+  def bedtime(), do: ~T[23:00:00]
+  def waketime(), do: ~T[07:00:00]
+
+  def current_time(), do: Timex.now(@timezone) |> DateTime.to_time()
+
+  def is_night?(), do: Timex.between?(current_time(), bedtime(), waketime(), cycled: true)
+  def is_evening?(), do: Timex.between?(current_time(), sunset(), bedtime())
+  def is_morning?(), do: Timex.between?(current_time(), waketime(), sunrise())
 
   def sunrise() do
     {:ok, rise} =
       Timex.today(@timezone)
       |> Solarex.Sun.rise(@lat, @long)
 
-    rise
+    NaiveDateTime.to_time(rise)
   end
 
   def sunset() do
@@ -18,25 +25,11 @@ defmodule Machinekamer.Clock do
       Timex.today(@timezone)
       |> Solarex.Sun.set(@lat, @long)
 
-    set
+    NaiveDateTime.to_time(set)
   end
 
-  def is_light?() do
-    Timex.now(@timezone)
-    |> Timex.between?(sunrise(), sunset())
-  end
+  def is_light?(), do: Timex.between?(current_time(), sunrise(), sunset())
 
-  def is_dark?(), do: not is_light?()
-
-  def time_until_bedtime() do
-    now = Timex.now(@timezone)
-    bedtime = Timex.set(now, @bedtime)
-
-    if Timex.after?(now, bedtime) do
-      Timex.Duration.zero()
-    else
-      Timex.Interval.new(from: now, until: bedtime)
-      |> Timex.Interval.duration(:duration)
-    end
-  end
+  def minutes_to_bedtime(), do: Timex.diff(bedtime(), current_time(), :minutes)
+  def minutes_after_waketime(), do: Timex.diff(current_time(), waketime(), :minutes)
 end
