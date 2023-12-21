@@ -15,9 +15,11 @@ defmodule Machinekamer.HallwayLight do
 
   def handle_info(payload, state) do
     message =
-      case payload do
-        %{"occupancy" => true} -> %{"state" => "ON", "brightness" => brightness()}
-        %{"occupancy" => false} -> %{"state" => "OFF"}
+      case {payload["occupancy"], get_brightness()} do
+        {false, _} -> %{"state" => "OFF"}
+        # Setting brightness 0 ON ignores brightness
+        {true, 0} -> %{"state" => "OFF"}
+        {true, b} -> %{"state" => "ON", "brightness" => b}
       end
 
     Machinekamer.publish("zigbee2mqtt/light_hallway/set", message)
@@ -25,7 +27,7 @@ defmodule Machinekamer.HallwayLight do
     {:noreply, state}
   end
 
-  defp brightness() do
+  defp get_brightness() do
     cond do
       # It's daytime, don't turn on the light
       Clock.is_light?() ->
