@@ -10,7 +10,8 @@ defmodule Machinekamer.Application do
     children = [
       {Phoenix.PubSub, name: :mqtt},
       Machinekamer.MqttConnection,
-      Machinekamer.HallwayLight
+      Machinekamer.HallwayLight,
+      Machinekamer.LivingroomLight
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
