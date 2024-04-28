@@ -6,7 +6,7 @@ defmodule Machinekamer.HallwayLight do
   def start_link(args), do: GenServer.start_link(__MODULE__, args)
 
   def init(_args) do
-    Phoenix.PubSub.subscribe(:mqtt, "zigbee2mqtt/sensor/motion/hallway")
+    Phoenix.PubSub.subscribe(:mqtt, "machinekamer/sensor/motion/upstairs-fused")
 
     Logger.info("Hallway light initialized")
 

@@ -10,6 +10,7 @@ defmodule Machinekamer.Application do
     children = [
       {Phoenix.PubSub, name: :mqtt},
       Machinekamer.MqttConnection,
+      Machinekamer.Sensor.FusedMotion,
       Machinekamer.HallwayLight,
       Machinekamer.LivingroomLight
     ]

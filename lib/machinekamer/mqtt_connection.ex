@@ -14,10 +14,10 @@ defmodule Machinekamer.MqttConnection do
 
     Logger.info("Mqtt connected")
 
-    topic = "zigbee2mqtt/#"
-    {:ok, _props, _reason} = :emqtt.subscribe(pid, %{}, [{topic, []}])
+    topics = [{"zigbee2mqtt/#", []}, {"machinekamer/#", []}]
+    {:ok, _props, _reason} = :emqtt.subscribe(pid, %{}, topics)
 
-    Logger.info("Mqtt subscribed to #{topic}")
+    Logger.info("Mqtt subscribed to #{inspect(topics)}")
 
     state = %{pid: pid}
 
