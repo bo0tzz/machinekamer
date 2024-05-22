@@ -17,7 +17,7 @@ defmodule Machinekamer.Clock do
       Timex.today(@timezone)
       |> Solarex.Sun.rise(@lat, @long)
 
-    NaiveDateTime.to_time(rise)
+    shift_utc(rise)
   end
 
   def sunset() do
@@ -25,11 +25,19 @@ defmodule Machinekamer.Clock do
       Timex.today(@timezone)
       |> Solarex.Sun.set(@lat, @long)
 
-    NaiveDateTime.to_time(set)
+    shift_utc(set)
   end
 
   def is_light?(), do: Timex.between?(current_time(), sunrise(), sunset())
 
   def minutes_to_bedtime(), do: Timex.diff(bedtime(), current_time(), :minutes)
   def minutes_after_waketime(), do: Timex.diff(current_time(), waketime(), :minutes)
+
+  defp shift_utc(ndt) do
+    # Yeah, this sucks
+    DateTime.from_naive!(ndt, "Etc/UTC")
+    |> DateTime.shift_zone!(@timezone)
+    |> DateTime.to_naive()
+    |> NaiveDateTime.to_time()
+  end
 end
