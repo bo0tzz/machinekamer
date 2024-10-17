@@ -12,9 +12,10 @@ defmodule Machinekamer.Application do
       Machinekamer.MqttConnection,
       Machinekamer.Sensor.FusedMotion,
       Machinekamer.HallwayLight,
-      Machinekamer.LivingroomLight
+      Machinekamer.LivingroomLight,
+      {Machinekamer.Scheduler, []},
+      %{id: "daily_plan", start: {SchedEx, :run_every, [Machinekamer.Scheduler, :plan, [], "0 1 * * *"]}},
     ]
-
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Machinekamer.Supervisor]

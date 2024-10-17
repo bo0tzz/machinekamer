@@ -27,7 +27,8 @@ defmodule Machinekamer.MixProject do
       {:phoenix_pubsub, "~> 2.1"},
       {:tz, "~> 0.26.5"},
       {:solarex, "~> 0.1.2"},
-      {:timex, "~> 3.7"}
+      {:timex, "~> 3.7"},
+      {:sched_ex, "~> 1.1"}
     ]
   end
 end

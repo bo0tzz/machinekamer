@@ -23,9 +23,21 @@ defmodule Machinekamer.LivingroomLight do
     ]
 
     if Enum.all?(checks) do
-      Machinekamer.publish("zigbee2mqtt/light/living_room/set", %{"state" => "OFF"})
+      turn_off()
     end
 
     {:noreply, new_state}
+  end
+
+  defp set(msg) do
+    Machinekamer.publish("zigbee2mqtt/light/living_room/set", msg)
+  end
+
+  def turn_on() do
+    set(%{"state" => "ON"})
+  end
+
+  def turn_off() do
+    set(%{"state" => "OFF"})
   end
 end
