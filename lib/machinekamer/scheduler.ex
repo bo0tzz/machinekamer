@@ -27,6 +27,6 @@ defmodule Machinekamer.Scheduler do
   defp run_sunset do
     Logger.info("Running sunset handler")
     Machinekamer.LivingroomLight.turn_on()
-    Machinekamer.publish("zigbee2mqtt/light/server_rack/get", %{"state" => "ON"})
+    Machinekamer.publish("zigbee2mqtt/light/server_rack/set", %{"state" => "ON"})
   end
 end
