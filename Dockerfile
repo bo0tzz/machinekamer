@@ -1,4 +1,4 @@
-FROM bitwalker/alpine-elixir:latest AS build
+FROM elixir:1.18 AS build
 
 ENV MIX_ENV=prod
 
@@ -8,8 +8,9 @@ COPY . .
 RUN mix deps.get
 RUN mix release
 
-FROM bitwalker/alpine-elixir:latest AS run
+FROM elixir:1.18 AS run
+WORKDIR /app
 
-COPY --from=build /build/_build/prod/rel/machinekamer/ ./
-RUN chmod +x ./bin/machinekamer
-CMD ./bin/machinekamer start
+COPY --from=build /build/_build/prod/rel/machinekamer/ /app
+RUN chmod +x /app/bin/machinekamer
+CMD /app/bin/machinekamer start
