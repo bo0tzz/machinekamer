@@ -18,7 +18,7 @@ defmodule Machinekamer.Scheduler do
 
   @impl true
   def handle_cast(:plan, state) do
-    sunset = Machinekamer.Clock.sunset_today()
+    sunset = Machinekamer.Clock.sunset_today() |> DateTime.shift(minute: -30)
     Logger.info("Planning sunset handler for #{sunset}")
     SchedEx.run_at(&run_sunset/0, sunset) |> IO.inspect()
     {:noreply, state}
